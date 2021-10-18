@@ -9,8 +9,9 @@ abstract class ListItem {
 class ScanResultItem implements ListItem {
   final String devName;
   final String devDescription;
+  final String devId;
 
-  ScanResultItem(this.devName, this.devDescription);
+  ScanResultItem(this.devName, this.devDescription, this.devId);
 
   @override
   Widget buildSubTitle(BuildContext ctx) {
@@ -57,12 +58,14 @@ class BleScanResultScreenState extends State<BleScanResultScreen> {
             scanMode: ScanMode.lowLatency)
         .timeout(const Duration(seconds: 2), onTimeout: (_) {})
         .listen((device) {
-          setState(() {
-            _bleScanResult = [
-              ..._bleScanResult,
-              ScanResultItem(device.name, "It works!")
-            ];
-          });
+          if (!_bleScanResult.any((dev) => device.id == dev.devId)) {
+            setState(() {
+              _bleScanResult = [
+                ..._bleScanResult,
+                ScanResultItem(device.name, "It works!", device.id)
+              ];
+            });
+          }
         });
   }
 }
