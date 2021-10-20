@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -52,20 +54,19 @@ class BleScanResultScreenState extends State<BleScanResultScreen> {
   }
 
   Future<void> _pullToRefresh() async {
-    ble
-        .scanForDevices(
-            withServices: [Uuid.parse("f210ebaa-2f9c-2611-8a37-693fe21f2100")],
-            scanMode: ScanMode.lowLatency)
-        .timeout(const Duration(seconds: 2), onTimeout: (_) {})
-        .listen((device) {
-          if (!_bleScanResult.any((dev) => device.id == dev.devId)) {
-            setState(() {
-              _bleScanResult = [
-                ..._bleScanResult,
-                ScanResultItem(device.name, "It works!", device.id)
-              ];
-            });
-          }
+    final stream = ble.scanForDevices(
+        withServices: [Uuid.parse("f210ebaa-2f9c-2611-8a37-693fe21f2100")],
+        scanMode: ScanMode.lowLatency).listen((device) {
+      if (!_bleScanResult.any((dev) => device.id == dev.devId)) {
+        setState(() {
+          _bleScanResult = [
+            ..._bleScanResult,
+            ScanResultItem(device.name, device.id, device.id)
+          ];
         });
+      }
+    });
+
+    Timer(const Duration(seconds: 3), () => {stream.cancel()});
   }
 }
