@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:soul_injector_app/ble_scan_view.dart';
 
 void main() => runApp(const MyApp());
@@ -9,8 +11,23 @@ class MyApp extends StatelessWidget {
 
   static const String _title = 'Soul Injector Configurator';
 
+  Future<void> checkPermission() async {
+    if (!await Permission.location.request().isGranted) {
+      Fluttertoast.showToast(
+          msg: "SI Configurator needs location permission for BLE",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      await openAppSettings();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    checkPermission();
     return const MaterialApp(
       title: _title,
       home: MyStatefulWidget(),

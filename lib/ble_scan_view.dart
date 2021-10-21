@@ -3,28 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
-abstract class ListItem {
-  Widget buildTitle(BuildContext ctx);
-  Widget buildSubTitle(BuildContext ctx);
-}
-
-class ScanResultItem implements ListItem {
-  final String devName;
-  final String devDescription;
-  final String devId;
-
-  ScanResultItem(this.devName, this.devDescription, this.devId);
-
-  @override
-  Widget buildSubTitle(BuildContext ctx) {
-    return Text(devName);
-  }
-
-  @override
-  Widget buildTitle(BuildContext ctx) {
-    return Text(devDescription);
-  }
-}
+import 'models/list.dart';
 
 class BleScanResultScreen extends StatefulWidget {
   const BleScanResultScreen({Key? key}) : super(key: key);
